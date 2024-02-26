@@ -2,9 +2,9 @@
 @url = http://localhost:3052/v1/api/
 POST {{url}}shop/sigup
 Content-Type:application/json
-
+x-api-key: c3c39a25885c11cb8c8b5797897bf5eb20c8589b2b78f40a19a7a241d2f37d126f1cfe6891eac4d19e4c8168e88ddc36289402e7533f476336e966771747ffdd
 {
     "name":"Shop TIPS",
-    "email":"shoptipjs@gmail.com",
+    "email":"shoptipjs88@gmail.com",
     "password":"abc123"
 }

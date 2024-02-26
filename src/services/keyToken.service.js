@@ -10,7 +10,7 @@ class KeyTokenService {
                 publicKey:publicKey,
                 privateKey:privateKey
             });
-            return tokens ? token.publicKeyString:null
+            return token.publicKey
         } catch (error) {
             return error
         }
