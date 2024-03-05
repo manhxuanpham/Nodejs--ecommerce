@@ -6,6 +6,7 @@ const crypto = require("node:crypto");
 const KeyTokenService = require("./keyToken.service");
 const { createTokenPair } = require("../auth/authUtils");
 const { getInfoData } = require("../utils/index");
+const {Api403Error} = require("../core/error.respone")
 
 const RoleShop = {
   SHOP: "SHOP",
@@ -14,14 +15,11 @@ const RoleShop = {
   ADMIN: "ADMIN",
 };
 class AccessService {
-  static sigUp = async ({ name, email, password }) => {
+  static signUp = async ({ name, email, password }) => {
     try {
       const holderShop = await shopeModel.findOne({ email }).lean();
       if (holderShop) {
-        return {
-          code: "xxx",
-          message: "shop already registed",
-        };
+        throw new Api403Error("error shop alrealy registered ")
       }
       console.log("password", password, "email", email, "name:", name);
       const passwordHash = await bcrypt.hash(password, 10);

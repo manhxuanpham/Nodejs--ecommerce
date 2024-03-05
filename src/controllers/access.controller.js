@@ -1,16 +1,12 @@
 'use strict'
 const AccessService = require('../services/acess.service');
+const {CREATED, OK} = require("../core/success.respone");
+
+const {catchAsync,asyncHandler} = require('../helpers/catch.async')
+
 class AccessController {
-    sigUp = async (req,res,next ) => {
-        try {
-            console.log(`[P]::sigUp::`,req.body)
-            // 200 Ok, 201 created
-            return res.status(201).json(
-                await AccessService.sigUp(req.body)
-            )
-        } catch (error) {
-            next(error)
-        }
+    signUp =  async (req, res,next) => {
+        CREATED(res, "Register success", await AccessService.signUp(req.body))
     }
 }
 
