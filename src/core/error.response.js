@@ -10,6 +10,17 @@ class BaseError extends Error {
         Error.captureStackTrace(this, this.constructor)
     }
 }
+class BadRequestError extends BaseError {
+    constructor(message = ReasonPhrases.CONFLICT, errors = [], status = StatusCodes.CONFLICT, isOperational = true) {
+        super(message, status, errors, isOperational);
+    }
+}
+
+class AuthFailureError extends BaseError {
+    constructor(message = ReasonPhrases.UNAUTHORIZED, errors = [], status = StatusCodes.UNAUTHORIZED, isOperational = true) {
+        super(message, status, errors, isOperational);
+    }
+}
 
 class Api409Error extends BaseError {
     constructor(message = ReasonPhrases.CONFLICT, errors = [], status = StatusCodes.CONFLICT, isOperational = true) {
@@ -48,4 +59,6 @@ module.exports = {
     Api409Error,
     BusinessLogicError,
     BaseError,
+    AuthFailureError,
+    BadRequestError
 }

@@ -2,9 +2,18 @@
 const AccessService = require('../services/acess.service');
 const {CREATED, OK} = require("../core/success.respone");
 
-const {catchAsync,asyncHandler} = require('../helpers/catch.async')
+const {asyncHandler,catchAsync} = require('../helpers/asyncHandler')
 
 class AccessController {
+    handlerRefreshToken = catchAsync(async (req, res) => {
+        OK(res, "get token success", await AccessService.refreshToken(req.body.refreshToken))
+    })
+    logout = catchAsync(async (req, res) => {
+        OK(res, "Logout success", await AccessService.logout(req.keyStore))
+    })
+    login = catchAsync(async (req, res) => {
+        OK(res, "Login success", await AccessService.login(req.body))
+    })
     signUp =  async (req, res,next) => {
         CREATED(res, "Register success", await AccessService.signUp(req.body))
     }
