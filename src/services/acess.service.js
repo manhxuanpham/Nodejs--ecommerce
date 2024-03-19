@@ -12,6 +12,7 @@ const {
   BusinessLogicError,
   BadRequestError,
   AuthFailureError,
+
 } = require("../core/error.response");
 const { findByEmail } = require("./shop.service");
 
@@ -27,40 +28,25 @@ class AccessService {
    * @param refreshToken
    * @returns {Promise<void>}
    */
-  static refreshToken = async(refreshToken) => {
-    const foundToken = await KeyTokenService.findByRefreshTokenUsed(refreshToken)
-    //check token used yet
-    if (foundToken) {
+  static refreshToken = async({refreshToken, user, keyStore}) => {
+    const{ userId, email } = user
+    console.log("$keystore:",keyStore);
 
-      //decode see who is that
-      const {userId,email} = await verifyJwt(refreshToken,foundToken.privateKey)
-      //delete all token in keyStore
+    if(keyStore.refreshTokensUsed.includes(refreshToken)) {
       await KeyTokenService.deleteKeyById(userId)
-      throw Api401Error("something wrong happened");
-
+      throw new Api403Error('something went wrong')
     }
-    // if no
-    const holderToken = await KeyTokenService.findByRefreshToken(refreshToken)
-    if(!holderToken) throw new AuthFailureError("shop not registered")
-
-    //verify token 
-    const {userId,email} = await verifyJwt(refreshToken,holderToken.privateKey)
-    console.log("[2]==",{userId,email})
+    if(keyStore.refreshToken !==refreshToken) throw new AuthFailureError('shop not registed')
 
 
-    // check userId
     const foundShop = await findByEmail({ email });
     if (!foundShop) throw new AuthFailureError("shop not registered")
 
     // create accessToken, refreshToken
-    const tokens = await createTokenPair(
-      { userId, email },
-      holderToken.publicKey,
-      holderToken.privateKey
-    );
+    const tokens = await createTokenPair( { userId, email },keyStore.publicKey,keyStore.privateKey);
 
     // update token
-    await holderToken.update({
+    await keyStore.updateOne ({
       $set: {
         refreshToken: tokens.refreshToken,
       },
@@ -72,9 +58,11 @@ class AccessService {
     // return new tokens
     return {
       user,
-      tokens,
+      tokens
     };
+
   };
+
 
   static logout = async (keyStore) => {
     console.log("keystore ??", keyStore);

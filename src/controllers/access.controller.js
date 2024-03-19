@@ -6,7 +6,11 @@ const {asyncHandler,catchAsync} = require('../helpers/asyncHandler')
 
 class AccessController {
     handlerRefreshToken = catchAsync(async (req, res) => {
-        OK(res, "get token success", await AccessService.refreshToken(req.body.refreshToken))
+        OK(res, "get token success", await AccessService.refreshToken({
+            refreshToken: req.refreshToken,
+            user: req.user,
+            keyStore: req.keyStore
+        }))
     })
     logout = catchAsync(async (req, res) => {
         OK(res, "Logout success", await AccessService.logout(req.keyStore))
