@@ -1,6 +1,6 @@
 'use strict'
-const AccessService = require('../services/acess.service');
-const {CREATED, OK} = require("../core/success.respone");
+const AccessService = require('../services/access.service')
+const {CREATED, OK} = require("../core/success.response")
 
 const {asyncHandler,catchAsync} = require('../helpers/asyncHandler')
 
