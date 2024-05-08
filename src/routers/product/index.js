@@ -7,11 +7,14 @@ const router = express.Router();
 
 
 router.get('/search/:keySearch',asyncHandler(productController.getListSearchProduct))
+router.get('/sku/select_variation',asyncHandler(productController.findOneSku))
+router.get('/sku/get_spu_info',asyncHandler(productController.findOneSpu))
 router.get('',asyncHandler(productController.findAllProducts))
 router.get('/:product_id',asyncHandler(productController.findProduct))
 
 // authentication
 router.use(authenticationV2)
+router.post('/spu/create',asyncHandler(productController.createSpu))
 router.post('/create',asyncHandler(productController.createProduct))
 router.patch('/:productId',asyncHandler(productController.updateProduct))
 router.post('/publish/:id',asyncHandler(productController.publishProductForShop))
@@ -21,5 +24,6 @@ router.post('/unpublish/:id',asyncHandler(productController.unPublishProductForS
 
 router.get('/drafts/all', asyncHandler(productController.getAllDraftsForShop))
 router.get('/publish/all', asyncHandler(productController.getAllPublishForShop))
+
 
 module.exports = router

@@ -21,7 +21,6 @@ class Ok extends SuccessResponse {
     }
 }
 
-
 class Create extends SuccessResponse {
     constructor({message, data = {}, options = {}}) {
         super({message, status: StatusCodes.CREATED, data, options})
@@ -43,7 +42,6 @@ const OK = (res, message, data, options = {}) => {
         options
     }).send(res)
 }
-
 
 module.exports = {
     OK,
