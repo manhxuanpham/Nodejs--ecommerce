@@ -1,5 +1,7 @@
 "use strict";
-
+const SPU_MODEL = require('../spu.model')
+const SKU_MODEL = require('../sku.model')
+const _  = require('lodash')
 const {
   product,
   electronic,
@@ -7,7 +9,7 @@ const {
   clothing,
 } = require("../product.model");
 const { Types } = require("mongoose");
-const { getSelectData, unGetSelectData } = require("../../utils");
+const { getSelectData, unGetSelectData, convertToObjectIdMongodb } = require("../../utils");
 
 const findAllDraftForShop = async ({ query, limit, skip }) => {
   return await queryProduct({ query, limit, skip });
@@ -41,6 +43,10 @@ const queryProduct = async ({ query, limit, skip }) => {
     .lean()
     .exec();
 };
+
+const findProductbyId = async(productId)=> {
+  return product.findOne({_id:convertToObjectIdMongodb(productId)}).lean()
+}
 const findAllProducts = async ({ limit, sort, page, filter, select }) => {
   const skip = (page - 1) * limit;
   const sortBy = sort === "ctime" ? { _id: -1 } : { _id: 1 };
@@ -57,6 +63,33 @@ const findAllProducts = async ({ limit, sort, page, filter, select }) => {
 const findProduct = async ({ product_id, unSelect }) => {
   return await product.findById(product_id).select(unGetSelectData(unSelect));
 };
+
+const getProductById = async(productId,skuId) => {
+  try {
+    const sku = await SKU_MODEL.findOne({
+      product_id:productId, sku_id:skuId
+    })
+    return _.omit(sku, ['__v', 'updateAt', 'createAt', 'isDeleted'])
+  } catch (error) {
+    return null
+  }
+}
+
+const checkProductByServer = async (products) => {
+  return await Promise.all(
+    products.map(async product => {
+      const foundProduct = await getProductById(product.productId,product.sku_id)
+      if (foundProduct) {
+        return {
+          price: foundProduct.sku_price,
+          quantity: product.quantity,
+          productId: product.productId
+        }
+      }
+    })
+  )
+}
+
 const publishProductByShop = async ({ product_shop, product_id }) => {
   const foundShop = await product.findOne({
     product_shop: new Types.ObjectId(product_shop),
@@ -101,4 +134,6 @@ module.exports = {
   findAllProducts,
   findProduct,
   updateProductById,
+  findProductbyId,
+  checkProductByServer
 };

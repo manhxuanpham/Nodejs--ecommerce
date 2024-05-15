@@ -79,7 +79,7 @@ const productSchema = new Schema({
     },
     isPublished: {
         type: Boolean,
-        default: false, // khong dk select ra
+        default: true, // khong dk select ra
         index: true,
         select: false // khong lay field nay ra
     },

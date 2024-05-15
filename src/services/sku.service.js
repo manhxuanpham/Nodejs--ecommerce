@@ -26,11 +26,13 @@ const oneSku = async({sku_id,product_id})=> {
         return null
     }
 }
+
 const allSkuBySpuId = async ({ product_id }) => {
     try {
         const skus = await SKU_MODEL.find({ product_id }).lean()
         return skus
     } catch (error) {
+        console.log(error)
         return null
     }
 }

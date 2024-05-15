@@ -8,7 +8,7 @@ const router = express.Router();
 
 router.get('/search/:keySearch',asyncHandler(productController.getListSearchProduct))
 router.get('/sku/select_variation',asyncHandler(productController.findOneSku))
-router.get('/sku/get_spu_info',asyncHandler(productController.findOneSpu))
+router.get('/spu/get_spu_info',asyncHandler(productController.findOneSpu))
 router.get('',asyncHandler(productController.findAllProducts))
 router.get('/:product_id',asyncHandler(productController.findProduct))
 

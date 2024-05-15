@@ -32,6 +32,6 @@ const orderSchema = new Schema({
     collection: COLLECTION_NAME,
     timestamps: {
         createdAt: 'createOn',
-        updatedAt: 'modifidOn'
+        updatedAt: 'modifierOn'
     }
 })

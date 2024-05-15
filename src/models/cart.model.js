@@ -16,11 +16,11 @@ const cartSchema = new Schema(
             default: [],
         },
         cart_count_product: {
-            type: Number,
-            required: true,
+            type: Number
         },
-        cart_user_id: {
-            type:Schema.Types.ObjectId,
+        cart_userId: {
+            type:Number,
+            require:true
 
         }
     },

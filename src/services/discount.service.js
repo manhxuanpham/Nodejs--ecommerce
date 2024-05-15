@@ -1,9 +1,13 @@
 "use strict";
 const { filter } = require("lodash");
 const moment = require('moment')
-const { BadRequestError } = require("../core/error.response");
+const _ = require('lodash')
+const { BadRequestError,BusinessLogicError } = require("../core/error.response");
 const Discount = require("../models/discount.model");
 const { convertToObjectIdMongodb } = require("../utils");
+const { checkDiscountExists } = require("../models/repositories/discount.repo")
+const { findAllProducts } = require('../models/repositories/spu.repo');
+const { product } = require("../models/product.model");
 /*
 discount service 
 1-generator discount code [Shop | Admin]
@@ -16,23 +20,23 @@ discount service
 class DiscountService {
   static async createDiscountCode(payload) {
     const {
-    discount_description,
-    discount_type,
-    discount_code,
-    discount_value,
-    discount_min_order_value,
-    discount_max_value,
-    discount_start_day,
-    discount_end_day,
-    discount_max_uses,
-    discount_name,
-    discount_uses_count,
-    discount_users_used,
-    discount_max_uses_per_user,
-    discount_is_active,
-    discount_applies_to,
-    discount_product_ids,
-    shopId
+      discount_description,
+      discount_type,
+      discount_code,
+      discount_value,
+      discount_min_order_value,
+      discount_max_value,
+      discount_start_day,
+      discount_end_day,
+      discount_max_uses,
+      discount_name,
+      discount_uses_count,
+      discount_users_used,
+      discount_max_uses_per_user,
+      discount_is_active,
+      discount_applies_to,
+      discount_product_ids,
+      shopId
     } = payload;
 
 
@@ -67,7 +71,7 @@ class DiscountService {
       discount_is_active: discount_is_active,
       discount_applies_to: discount_applies_to,
       discount_product_ids: discount_product_ids === "all" ? [] : discount_product_ids
-      
+
     });
     return newDiscount
   }
@@ -78,23 +82,23 @@ class DiscountService {
   static async getAllDiscountCodesWithProduct({
     code,
     shopId,
-    userId,
     limit,
     page,
   }) {
     const foundDiscount = await Discount
       .findOne({
         discount_code: code,
-        discount_shopId: convertToObjectIdMongodb(shopId),
+        discount_shop_id: convertToObjectIdMongodb(shopId),
       })
       .lean();
-    if (foundDiscount && foundDiscount.discount_is_active) {
+    console.log("foundDiscount", foundDiscount)
+    if (!foundDiscount && !foundDiscount.discount_is_active) {
       throw new BadRequestError("discount exist!");
     }
     const { discount_applies_to, discount_product_ids } = foundDiscount;
     let products;
     if (discount_applies_to === "all") {
-      products = await finAllProducts({
+      products = await findAllProducts({
         filter: {
           product_shop: convertToObjectIdMongodb(shopId),
           isPublish: true,
@@ -102,11 +106,23 @@ class DiscountService {
         limit: +limit,
         page: +page,
         sort: "ctime",
-        select: ["product_name"],
       });
     }
-    return products;
+    if (discount_applies_to == "specific") {
+      products = await findAllProducts({
+        filter: {
+          _id: { $in: discount_product_ids },
+          isPublished: true
+        },
+        limit: +limit,
+        page: +page,
+        sort: "ctime",
+      });
+    }
+
+    return products.map((product) => _.omit(product, ['__v', 'updateAt', 'createAt', 'isDeleted']));
   }
+
   /*
        get all discount code of Shop
       */
@@ -118,16 +134,16 @@ class DiscountService {
         discount_shopId: convertToObjectIdMongodb(shopId),
         discount_is_active: true,
       },
-      Select: [ "discount_shop_id","discount_value"],
+      Select: ["discount_shop_id", "discount_value"],
       model: discount,
     });
   }
   // Apply discount code
   static async getDiscountAmount({ codeId, userId, shopId, products }) {
+    console.log({codeId,userId,shopId,product});
     const foundDiscount = await checkDiscountExists({
-      model: discount,
       filter: {
-        discount_code: code,
+        discount_code: codeId,
         discount_shop_id: convertToObjectIdMongodb(shopId),
       },
     });
@@ -157,7 +173,7 @@ class DiscountService {
     )
       throw new BusinessLogicError("Discount code has expired");
 
-    // check xem cos et gia tri toi thieu hay k
+    // check xem co set gia tri toi thieu hay k
     let totalOrder = 0;
     if (discount_min_order_value > 0) {
       // get total
@@ -177,15 +193,13 @@ class DiscountService {
         (user) => user.userId === userId
       );
       if (userDiscount) {
-        // ..
+        // xử lí khi user đã dùng discount này
+
       }
     }
 
     // check xem discount nay la fixed amount
-    const amount =
-      discount_type === "fixed_amount"
-        ? discount_value
-        : totalOrder * (discount_value / 100);
+    const amount = discount_type === "fixed_amount" ? discount_value : totalOrder * (discount_value / 100);
 
     return {
       totalOrder,
@@ -226,4 +240,4 @@ class DiscountService {
   }
 }
 
-module.exports =  DiscountService;
+module.exports = DiscountService;

@@ -18,7 +18,7 @@ const discountSchema = new Schema(
       default: "fixed_amount", // percentage
     },
     discount_value: {
-      type: String,
+      type: Number,
       required: true,
     },
     discount_code: {

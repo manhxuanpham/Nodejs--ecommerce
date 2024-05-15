@@ -5,7 +5,7 @@ const { CREATED, OK } = require("../core/success.response")
 
 const { oneSku } = require("../services/sku.service")
 const { asyncHandler, catchAsync } = require('../helpers/asyncHandler')
-const { newSpu, oneSpu } = require('../services/spu.service')
+const { newSpu, oneSpu, oneSpuV2 } = require('../services/spu.service')
 
 class ProductController {
 
@@ -19,18 +19,19 @@ class ProductController {
     findOneSku = async (req, res, next) => {
         try {
             const { sku_id, product_id } = req.query;
-            CREATED(res, "get sku one", await oneSku({ sku_id, product_id }))
+            OK(res, "get product with sku one", await oneSpuV2({ sku_id, product_id }))
         } catch (error) {
 
         }
     }
+ 
     findOneSpu = async (req, res, next) => {
         try {
             const { product_id } = req.query;
             console.log("#Product_id", product_id)
-            CREATED(res, "Product One", await oneSpu({ spu_id: product_id }))
+            OK(res, "Product One", await oneSpu({ spu_id: product_id }))
         } catch (error) {
-
+            console.log(error)
         }
     }
     //END SPU, SKU
