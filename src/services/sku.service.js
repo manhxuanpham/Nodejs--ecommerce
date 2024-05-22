@@ -36,8 +36,20 @@ const allSkuBySpuId = async ({ product_id }) => {
         return null
     }
 }
+const decreaseQuantityById = async({sku_id,quantity}) => {
+    try {
+        const sku = await SKU_MODEL.findOne({sku_id})
+        sku.sku_stock -= quantity
+       await sku.save()
+        return sku
+    } catch (error) {
+        console.log(error)
+        return null
+    }
+}
 module.exports = {
     newSku,
     oneSku,
-    allSkuBySpuId
+    allSkuBySpuId,
+    decreaseQuantityById
 }

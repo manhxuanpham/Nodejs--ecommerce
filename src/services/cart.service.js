@@ -102,17 +102,24 @@ class CartService {
         }})
         
     }
-    static async deleteCart({userId,product}) {
+    static async deleteProductFromCart({userId,productId}) {
         const query = { cart_userId: userId, cart_state: 'active' },
             updateSet = {
                 $pull: {
                     cart_products: {
-                        productId
+                        product_id:productId
                     }
                 }
             }
-        return await CART_MODEL.updateOne(query, updateSet)
+        const result = await CART_MODEL.updateOne(query, updateSet);
+        if (result.modifiedCount === 0) {
+            console.log('No product was removed from the cart.');
+            return false;  // Hoặc xử lý phù hợp
+        }
+        return true;
+
     }
+
     static async getListCart({userId}) {
         return await CART_MODEL.find({
             cart_userId: +userId

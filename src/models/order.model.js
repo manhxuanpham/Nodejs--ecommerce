@@ -35,3 +35,5 @@ const orderSchema = new Schema({
         updatedAt: 'modifierOn'
     }
 })
+
+module.exports = model(DOCUMENT_NAME,orderSchema);

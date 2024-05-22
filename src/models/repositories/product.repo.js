@@ -83,7 +83,9 @@ const checkProductByServer = async (products) => {
         return {
           price: foundProduct.sku_price,
           quantity: product.quantity,
-          productId: product.productId
+          productId: product.productId,
+          sku_id:foundProduct.sku_id,
+          
         }
       }
     })
@@ -135,5 +137,6 @@ module.exports = {
   findProduct,
   updateProductById,
   findProductbyId,
-  checkProductByServer
+  checkProductByServer,
+  getProductById
 };

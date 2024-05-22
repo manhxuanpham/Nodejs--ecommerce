@@ -49,7 +49,7 @@ class CheckoutService {
                     codeId: shop_discounts[0].discount_code,
                     userId,
                     shopId:shop_discounts[0].shop_id,
-                    products: checkProductServer
+                    products: checkProductServer 
                 })
                 checkout_order.totalDiscount += discount
                 if (discount > 0) {

@@ -52,6 +52,28 @@ const newSpu = async ({
         console.error("Error occurred:", error);
     }
 }
+
+const newSpus = async(products)=> {
+    const product = {
+        product_name,
+        product_thumb,
+        product_description,
+        product_quantity,
+        product_price,
+        product_category,
+        product_shop,
+        product_attributes,
+        product_variations,
+        sku_list = []
+
+    } = products
+    products.map(async(product) => {
+        
+    })
+    for(let i = 0 ;i<products.length;i++) {
+        await newSpu(product);
+    }
+}
 const oneSpu = async ({ spu_id }) => {
     try {
         const spu = await SPU_MODEL.findOne({
@@ -85,7 +107,6 @@ const oneSpuV2 = async ({ sku_id, product_id }) => {
 
         // Lấy ra các biến thể tương ứng từ sku.sku_tier_idx
         const variations = sku.sku_tier_idx.map((index, variantIndex) => {
-
             return {
                 name: spu.product_variations[variantIndex].name,
                 option: spu.product_variations[variantIndex].options[index],
