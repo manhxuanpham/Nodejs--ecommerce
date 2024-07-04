@@ -1,4 +1,4 @@
-const { model, Schema } = require('mongoose');
+const { model,Types, Schema } = require('mongoose');
 
 
 
@@ -7,7 +7,7 @@ const COLLECTION_NAME = "Orders";
 
 
 const orderSchema = new Schema({
-    order_userId: { type: Number, require: true },
+    order_userId: { type: Types.ObjectId, require: true },
     order_checkout: { type: Object, default: {} },
     /**
      *  order_checkout = {
@@ -22,6 +22,7 @@ const orderSchema = new Schema({
      * state
      * country
      */
+    order_shopId: { type: Types.ObjectId, require: true, ref: 'Shop' },
     order_payment: { type: Object, default: {} },
     order_products: { type: Array, require: true },
     order_trackingNumber: { type: String, default: '#012092132' },

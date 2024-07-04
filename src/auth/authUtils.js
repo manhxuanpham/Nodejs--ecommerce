@@ -70,8 +70,8 @@ const authenticationV2 = asyncHandler(async (req, res, next) => {
     const refreshToken = req.headers[HEADER.REFRESH_TOKEN]
     const accessToken = req.headers[HEADER.AUTHORIZATION]
     const userId = req.headers[HEADER.CLIENT_ID]
-    
-    if(!userId) throw new AuthFailureError("invalid request")
+    console.log("user id",userId)
+    if(!userId) throw new AuthFailureError("invalid request ")
       // 2. check keyStore by userId
     const keyStore = await findUserById(userId)
     if(!keyStore) throw new Api404Error("Not Found keyStore")

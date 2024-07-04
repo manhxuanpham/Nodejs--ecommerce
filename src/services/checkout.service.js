@@ -22,7 +22,6 @@ class CheckoutService {
         // calculator bill
         for (let i = 0; i < shop_order_ids.length; i++) {
             const { shopId, shop_discounts = [], item_products = [] } = shop_order_ids[i]
-
             // check product available
             const checkProductServer = await checkProductByServer(item_products)
             // if (!checkout_order[0]) throw new BusinessLogicError('Order invalid')
@@ -33,7 +32,7 @@ class CheckoutService {
             }, 0)
 
             // total before
-            checkout_order.totalPrice = +checkoutPrice
+            checkout_order.totalPrice +=checkoutPrice
 
             const itemCheckout = {
                 shopId,

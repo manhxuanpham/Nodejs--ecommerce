@@ -5,7 +5,7 @@ const _ = require('lodash')
 const { BadRequestError,BusinessLogicError } = require("../core/error.response");
 const Discount = require("../models/discount.model");
 const { convertToObjectIdMongodb } = require("../utils");
-const { checkDiscountExists } = require("../models/repositories/discount.repo")
+const { checkDiscountExists, findAllDiscountCodesSelect } = require("../models/repositories/discount.repo")
 const { findAllProducts } = require('../models/repositories/spu.repo');
 const { product } = require("../models/product.model");
 /*
@@ -61,8 +61,8 @@ class DiscountService {
       discount_value: discount_value,
       discount_min_order_value: discount_min_order_value || 0,
       discount_max_value: discount_max_value,
-      discount_start_day: moment.utc(discount_start_day),
-      discount_end_day: moment.utc(discount_end_day),
+      discount_start_day: moment.utc(discount_start_day).format(),
+      discount_end_day: moment.utc(discount_end_day).format(),
       discount_max_uses: discount_max_uses,
       discount_uses_count: discount_uses_count,
       discount_users_used: discount_users_used,
@@ -131,15 +131,15 @@ class DiscountService {
       limit: +limit,
       page: +page,
       filter: {
-        discount_shopId: convertToObjectIdMongodb(shopId),
+        discount_shop_id: convertToObjectIdMongodb(shopId),
         discount_is_active: true,
       },
-      Select: ["discount_shop_id", "discount_value"],
-      model: discount,
+      Select: ["discount_shop_id", "discount_value"]
     });
   }
   // Apply discount code
   static async getDiscountAmount({ codeId, userId, shopId, products }) {
+    
     console.log({codeId,userId,shopId,product});
     const foundDiscount = await checkDiscountExists({
       filter: {

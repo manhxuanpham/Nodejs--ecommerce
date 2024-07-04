@@ -33,8 +33,7 @@ class CategoryService {
         })
     }
     static async getListCategory() {
-        await CATEGORY_MODEL.find();
-
+       return await CATEGORY_MODEL.find();
     }
 }
 

@@ -5,7 +5,7 @@ const { CREATED, OK } = require("../core/success.response")
 
 const { oneSku } = require("../services/sku.service")
 const { asyncHandler, catchAsync } = require('../helpers/asyncHandler')
-const { newSpu, oneSpu, oneSpuV2 } = require('../services/spu.service')
+const { newSpu, newSpus, oneSpu, oneSpuV2, getAllSpuWithCategory } = require('../services/spu.service')
 
 class ProductController {
 
@@ -15,16 +15,21 @@ class ProductController {
         const spu = await newSpu({ ...req.body, product_shop: req.user.userId })
         CREATED(res, 'success create spu', spu)
     }
+    createMultipleSpu = async (req, res, next) => {
+
+        const spu = await newSpus({ ...req.body, product_shop: req.user.userId })
+        CREATED(res, 'success create spu', spu)
+    }
 
     findOneSku = async (req, res, next) => {
         try {
             const { sku_id, product_id } = req.query;
-            OK(res, "get product with sku one", await oneSpuV2({ sku_id, product_id }))
+            OK(res, "get product with ", await oneSpuV2({ sku_id, product_id }))
         } catch (error) {
 
         }
     }
- 
+
     findOneSpu = async (req, res, next) => {
         try {
             const { product_id } = req.query;
@@ -33,6 +38,15 @@ class ProductController {
         } catch (error) {
             console.log(error)
         }
+    }
+    findAllSpuWithCategory = async (req, res, next) => {
+        OK(res, "get all product with category", await getAllSpuWithCategory(
+            {
+                product_category: req.params.categoryId,
+                page:req.query.page,
+                limit:req.query.limit
+            }
+        ))
     }
     //END SPU, SKU
 
@@ -88,7 +102,9 @@ class ProductController {
 
         OK(res, 'get draft product success', await ProductServiceV2.findAllDraftForShop(
             {
-                product_shop: req.user.userId
+                product_shop: req.user.userId,
+                skip: req.params.skip,
+                limit: req.params.limit
             }))
 
     }
@@ -107,6 +123,13 @@ class ProductController {
         OK(res, 'get list product success', await ProductServiceV2.searchProducts(req.params))
 
     }
+    getListSearchProductv2 = async (req, res, next) => {
+
+
+        OK(res, 'get list product v2 success', await ProductServiceV2.searchProductsV2({ ...req.params }))
+
+    }
+
     findAllProducts = async (req, res, next) => {
 
 

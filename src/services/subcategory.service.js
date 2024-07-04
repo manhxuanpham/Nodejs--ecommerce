@@ -13,7 +13,6 @@ class SubCategoryService {
             subcategory_description,
             subcategory_image,
             subcategory_parent
-
         })
     }
     static async newSubCategories(payload) {

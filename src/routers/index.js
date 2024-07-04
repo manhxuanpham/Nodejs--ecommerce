@@ -4,6 +4,7 @@ const { apiKey, permission } = require('../auth/checkAuth');
 const {pushLogToDiscord} = require('../middlewares/index')
 const router = express.Router();
 
+
 //add log discord
 router.use(pushLogToDiscord)
 //check apiKey
@@ -20,6 +21,8 @@ router.use('/v1/api/discount', require('./discount'))
 router.use('/v1/api/cart', require('./cart'))
 router.use('/v1/api/checkout', require('./checkout'))
 router.use('/v1/api/order', require('./order'))
+router.use('/v1/api/notification', require('./notification'))
+router.use('/v1/api/upload', require('./upload'))
 
 
 module.exports = router

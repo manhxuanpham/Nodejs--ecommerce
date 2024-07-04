@@ -12,6 +12,9 @@ class CategoryController {
     update = async (req, res, next) => {
         CREATED(res, 'update category success', await CategoryService.updateCategory(req.body))
     }
+    getAll = async (req, res, next) => {
+        OK(res, 'get category success', await CategoryService.getListCategory())
+    }
     
 }
 module.exports = new CategoryController()

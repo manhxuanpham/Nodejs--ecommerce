@@ -40,7 +40,7 @@ const discountSchema = new Schema(
     discount_uses_count: {
       // so discount da duoc su dung
       type: Number,
-      required: true,
+      default:0
     },
     discount_users_used: {
       //ai đã sử dụng
@@ -64,7 +64,7 @@ const discountSchema = new Schema(
 
     discount_is_active: {
       type: Boolean,
-      required: true,
+      default:true
     },
     discount_applies_to: {
       type: String,

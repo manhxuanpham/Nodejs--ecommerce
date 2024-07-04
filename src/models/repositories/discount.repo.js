@@ -25,11 +25,11 @@ const findAllDiscountCodesSelect = async ({
   sort = "ctime",
   filter,
   select,
-  model,
+  
 }) => {
   const skip = (page - 1) * limit;
   const sortBy = sort === "ctime" ? { _id: -1 } : { _id: 1 };
-  return await model
+  return await DISCOUNT_MODEL
     .find(filter)
     .sort(sortBy)
     .skip(skip)

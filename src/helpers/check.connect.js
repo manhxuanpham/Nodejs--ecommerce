@@ -6,7 +6,7 @@ const os = require('os');
 const process = require('process')
 const _SECONDS = 5000
 // check connect
-const countConect = () => {
+const countConnect = () => {
     const numConnect = mongoose.connect.length
     console.log(`Number of connect:${numConnect}`)
 }
@@ -27,6 +27,6 @@ const checkOverload = ()=> {
     },_SECONDS)
 }
 module.exports = {
-    countConect,
+    countConnect,
     checkOverload
 }

@@ -15,6 +15,7 @@ const {
   findProduct,
   findAllProducts,
   updateProductById,
+  searchProductByUserv2
 } = require("../models/repositories/product.repo");
 const {insertInventory} = require('../models/repositories/inventory.repo')
 const { removeUndefinedObject, updateNestedObjectParser } = require("../utils");
@@ -53,6 +54,17 @@ class ProductFactory {
   static async searchProducts({ keySearch }) {
     return await searchProductByUser({ keySearch });
   }
+  static async searchProductsV2({ 
+    keySearch, 
+    limit = 50,
+    sort = "ctime",
+    page = 1, }) {
+    return await searchProductByUserv2({
+      keySearch,
+      limit ,
+      sort,
+      page });
+  }
   static async findAllProducts({
     limit = 50,
     sort = "ctime",
@@ -64,7 +76,7 @@ class ProductFactory {
       sort,
       page,
       filter,
-      select: ["product_name ", "product_price", "product_thumb"],
+      select: ["product_name","product_id", "product_price", "product_thumb"],
     });
   }
   static async findProduct({ product_id }) {

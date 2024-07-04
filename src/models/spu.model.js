@@ -9,12 +9,10 @@ const productSchema = new Schema({
     product_id: { type: String, default: '' },
     product_name: {
         type: String,
-        trim: true,
-        maxLength: 150
+        trim: true
     },
     product_thumb: {
         type: String,
-        unique: true,
         trim: true
     },
     product_description: {

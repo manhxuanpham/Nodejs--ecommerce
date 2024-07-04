@@ -14,7 +14,6 @@ class Database {
         if (1 === 1) {
             mongoose.set('debug',true) // in lại các hoạt động khi query
             mongoose.set('debug',{color:true})
-
         }
 
         mongoose.connect(connectString).then( _ => {

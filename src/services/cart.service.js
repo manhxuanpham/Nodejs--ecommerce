@@ -1,7 +1,7 @@
 const { model } = require('mongoose')
 const CART_MODEL = require('../models/cart.model')
 const { findProductbyId } = require('../models/repositories/product.repo')
-
+const { convertToObjectIdMongodb } = require('../utils')
 const {Api404Error} = require('../core/error.response')
 
 
@@ -17,7 +17,7 @@ const {Api404Error} = require('../core/error.response')
 
 class CartService {
     static async createCart({ userId, product }) {
-        const query = { cart_userId: userId, cart_state: 'active' },
+        const query = { cart_userId: convertToObjectIdMongodb(userId), cart_state: 'active' },
             updateOrInsert = {
                 $addToSet: {
                     cart_products: product
@@ -41,18 +41,18 @@ class CartService {
     
 }
     static async updateCartQuantity({ userId, product }) {
-        const { product_id, quantity } = product
+        const { product_id, product_quantity } = product
         const query = { cart_userId: userId, 'cart_products.product_id': product_id, cart_state: 'active' },
             updateSet = {
                 $inc: {
-                    'cart_products.$.quantity': quantity
+                    'cart_products.$.product_quantity': product_quantity 
                 }
             }, options = { upsert: true, new: true }
         return await CART_MODEL.findOneAndUpdate(query, updateSet, options)
     }
     static async addToCart({ userId, product = {} }) {
-        const userCart = await CART_MODEL.findOne({ cart_userId: userId })
-        const productCart = await CART_MODEL.findOne({cart_userId:userId,'cart_products.product_id': product.product_id})
+        const userCart = await CART_MODEL.findOne({ cart_userId: convertToObjectIdMongodb(userId) })
+        const productCart = await CART_MODEL.findOne({cart_userId:convertToObjectIdMongodb(userId),'cart_products.product_id': product.product_id})
         if (!userCart) {
             return await this.createCart({ userId, product })
         }
@@ -122,7 +122,7 @@ class CartService {
 
     static async getListCart({userId}) {
         return await CART_MODEL.find({
-            cart_userId: +userId
+            cart_userId: convertToObjectIdMongodb(userId), cart_state: 'active'
         }).lean()
     }
 }

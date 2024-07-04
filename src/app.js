@@ -3,6 +3,7 @@ const compression = require('compression');
 const express = require('express');
 const { default: helmet } = require('helmet');
 const morgan = require('morgan');
+const cors = require('cors')
 
 const app = express();
 
@@ -21,6 +22,14 @@ require('./dbs/init.Mongodb');
 // const {checkOverload} = require("./helpers/check.connect");
 // checkOverload();
 
+//cors 
+app.use(cors());
+// app.use(cors({
+//     origin: '*',
+//     methods: ['GET', 'POST', 'DELETE', 'UPDATE', 'PUT', 'PATCH'],
+//     allowedHeaders: ['Content-Type', 'Authorization', 'Allow-Access-Control-Origin', 'x-api-key'],
+//     credentials:true
+// }));
 //init router
 app.use('/',require('./routers'));
 

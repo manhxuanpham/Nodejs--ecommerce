@@ -1,4 +1,4 @@
-const { model, Schema } = require("mongoose");
+const { model,Types, Schema } = require("mongoose");
 
 // hang ton kho
 const DOCUMENT_NAME = "Cart";
@@ -19,7 +19,7 @@ const cartSchema = new Schema(
             type: Number
         },
         cart_userId: {
-            type:Number,
+            type:Types.ObjectId,
             require:true
 
         }
